@@ -13,6 +13,7 @@ library(tidyverse)
 
 ```{r}
 ggplot( data = mtcars, aes(x = mpg))+
-  geom_histogram(color = "black")
+  geom_histogram(color = "black")+
+  lab( x = "miles per gallon")
 ```
 
