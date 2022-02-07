@@ -1,0 +1,55 @@
+---
+title: "Homework3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Exercise 1. Pick 1 of the 3 examples (stand your ground, climate change, or covid cases), and summarize why that graphic is not ethical. Make sure to include the context that the graph was created in from Section 8.3 in your explanation.
+
+The graphic from stand your ground is unethical because it plays on the human instinct that going up the y axis means an increase. This pushes readers to see that after the law was passed that deaths decreased. However, since the y axis is inverted this ends up being false and in fact more people have died. This was released shortly after the George Zimmerman acquittal and might influence how people perceive gun safety going forward.  
+
+
+Exercise 2. Choose 2 of the 12 principles of ethical practice of data science and come up a (possibly hypothetical) scenario where each of your two chosen principles would come into play.
+
+1.Be open to changing our methods and conclusions in response to new knowledge.
+2.Recognize and mitigate bias in ourselves and in the data we use.
+
+These principles would be important in really any project. By mitigating bias you improve your results. With good results can come new knowledge and being open allows further investigation into such results. When combined this allows for a better project.  
+
+
+Exercise 3a. Find a graphic on the Internet that shows evidence that the Covid vaccine has “worked.”
+
+https://scdhec.gov/sites/default/files/media/image/COVID19-VaxStatus_Dec16_Jan15.png
+
+graphic showing percent of individuals vaccinated and corresponding death/hospitalization info.
+
+Exercise 3b. Find a graphic on the Internet that shows evidence that the Covid vaccine has “not worked.”
+
+https://ichef.bbci.co.uk/news/640/cpsprodpb/5271/production/_116950112_screenshot2021-02-13at18.04.39-nc.png
+
+graphic showing spread of antivax likes increasing.(hard to find data against vaccine)
+
+
+####8.2
+
+Exercise 1. Which of the two visualizations better humanizes the victims of lynching? Why?
+
+I think the second map does because each lynching is a data point with a a name and background if available. 
+
+
+Exercise 2. Suppose that you want to humanize the victims more in a static, non-interactive graph. Brainstorm ways that you could achieve this.
+
+You could maybe do a plot by state or age if there is enough information. Something that emphases the number of lynchings or gives more information about the people killed. 
+
+
+Exercise 3. A deeper discussion of these sites appears in this paper. Read the Introduction section on TayTweets and write 3 major takeaways from this section.
+
+One takeaway is that we are responsible for the graphics/machines we produce and the prejudices that come along with them. Another key takeaway is that it is almost impossible for a graphic to be "neutral". They are arguments and should be used intentionally to lead not to confuse. Finally, while both maps use different styles to get the message across, Monroe Work Today plays on human ethics by showing each indiviual lynching as a person not just as a data point. 
+
+
+Exercise 4. The authors of the book Data Feminism argue that “leveraging emotion” might help us better communicate with data. Read the first four paragraphs of Chapter 3 of the Data Feminism book. One example the authors use pertains to deaths from gun violence in the United States. Examine this animated chart. Explain how the chart uses emotion to convey the losses due to gun violence better than, for example, a statement that 11,356 people were killed from gun violence in 2018.
+
+The chart starts by showing a single data point arching and abruptly stopping when a shooting took their life. It then extrapolates out how long they could have lived. It does this for every point and in the end shows 472,000 years stolen. This plays on the human emotion of loss and by playing each line one by one it makes it feel more personal.
