@@ -1,0 +1,78 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+“All work presented is my own, and I have followed all rules for collaboration.”
+
+Caleb Hamblen
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#install.packages("here")
+library(here)
+library(tidyverse)
+library(readxl)
+#df <- read_excel(here("Data/data/slu_graduates_17_21.xlsx"))
+
+library(readxl)
+df <-  read_excel("~/Stat4005_DataVis/Data/data/slu_graduates_17_21.xlsx")
+
+
+## fixes error in the data
+df <- df %>% mutate(across(everything(),
+                           .fns = ~replace(., . ==  "STATS" , "STAT")))
+
+df_long <- df %>% pivot_longer(3:8, names_to = "type", values_to = "discipline")
+
+df_major <- df_long %>% 
+  filter(type == "major1" | type == "major2" | type == "major3")
+```
+
+
+1.
+```{r}
+data1 <- df_major %>% group_by(discipline)%>%
+  filter(discipline != is.na(discipline))%>%
+  summarise(ncount = n()) %>%
+  arrange(desc(ncount))%>%
+  slice(1:10)%>%
+  mutate(discipline = fct_reorder(discipline,ncount))
+
+
+ggplot(data = data1, aes(x = discipline, y = ncount))+
+  geom_point()+
+  coord_flip()+
+  geom_segment( aes(x=discipline, xend= discipline, y=0, yend=ncount))
+```
+
+2. 
+
+```{r}
+df_2 <- df %>% mutate(across(everything(),
+                           .fns = ~replace(., . ==  "STATS" , "STAT")))
+```
+
+```{r}
+major2 <- df_2 %>% filter(major1 == "STAT" | major2 == "STAT" | major3 == "STAT") %>% pivot_longer(c(3 ,4, 5, 6, 7, 8), 
+               values_to = "discipline",
+               names_to = "type")%>%
+  filter(type == "minor1" | type == "minor2" | type == "minor3")%>%
+  filter(discipline != "STAT" & !is.na(discipline))
+```
+
+```{r}
+major_F2 <- major2 %>% group_by(discipline)%>%
+  summarise(ncount = n()) %>%
+  arrange(desc(ncount))%>%
+  slice(1:10) %>%
+  mutate(discipline = fct_reorder(discipline,ncount))
+
+ggplot(data = major_F2, aes(x = discipline, y = ncount))+
+  geom_col()+
+  coord_flip()
+```
+
