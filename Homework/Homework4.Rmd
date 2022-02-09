@@ -1,0 +1,35 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+“All work presented is my own, and I have followed all rules for collaboration.”
+Caleb Hamblen
+
+Question 1 (5 points). Consider the Challenger example in our course notes. Clearly, the graphic used to communicate the results is poorly made: it eliminates data points when it really should not. However, the engineers making the graph did not have “malicious intent:” they did not purposefully remove these data points to try to lie: it was a mistake. Is the visualization still unethical? Use principles from the Modern Data Science Readings to explain in a few sentences.
+
+I personally lean towards saying it was ethical since it seems there was no mal intent. However, by the principles in order to be ethical, users should mitigate bias in ourselves and data. Obviously this data had bias but was not known. Another principle states that users "Consider carefully the ethical implications of choices we make when using data, and the impacts of our work on individuals and society". I think you make a strong argument that the creators of the first graphic did not consider the implications of their choice on what data to include. 
+
+
+Question 2 (4 points). Find a graphic online, other than any given in our course readings, that is unethical. Provide a link to your graphic and give a 2-3 sentence description explaining why that graphic is not ethical.
+
+https://www.statisticshowto.com/wp-content/uploads/2014/01/usa-today-2.png
+
+This graphic comes from the Republican side of the Senate budget committee and shows total welfare on the y with time on the x. The y axis starts at 94,000,000(not 0) and goes only up to 100,000,000 making it look like the problem is more severe than it is. This is unethical since it is intentionally trying to make it seem more promiment that it actually is for a polical agenda. 
+
+
+Question 3 (3 points). Explain, in your own words, what each of the following Git terms mean:
+
+commit: a message about the file you are pushing to gitHub and what was changed. 
+
+push: sends a copy of the checked items from RStudio to GitHub where it is saved.
+
+pull: Recieves and old save from github and pulls it back into Rstudio.
+
+Question 4 (3 points). These three points are given if you successfully committed with a commit message and pushed your .Rmd and .html files to your GitHub account.
+
+Done
