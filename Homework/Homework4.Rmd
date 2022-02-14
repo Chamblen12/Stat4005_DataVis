@@ -7,29 +7,84 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-“All work presented is my own, and I have followed all rules for collaboration.”
-Caleb Hamblen
+```{r}
+library(tidyverse)
+library(readr)
+hpi_tidy <- read_csv("~/Stat4005_DataVis/Data/data/hpi-tidy.csv")
+```
 
-Question 1 (5 points). Consider the Challenger example in our course notes. Clearly, the graphic used to communicate the results is poorly made: it eliminates data points when it really should not. However, the engineers making the graph did not have “malicious intent:” they did not purposefully remove these data points to try to lie: it was a mistake. Is the visualization still unethical? Use principles from the Modern Data Science Readings to explain in a few sentences.
+Exericse 1. Make a map of a variable of your choosing. In coord_map(), use projection = "mercator", which is also the default (we will see in a later exercise that this probably is not the best choice).
 
-I personally lean towards saying it was ethical since it seems there was no mal intent. However, by the principles in order to be ethical, users should mitigate bias in ourselves and data. Obviously this data had bias but was not known. Another principle states that users "Consider carefully the ethical implications of choices we make when using data, and the impacts of our work on individuals and society". I think you make a strong argument that the creators of the first graphic did not consider the implications of their choice on what data to include. 
-
-
-Question 2 (4 points). Find a graphic online, other than any given in our course readings, that is unethical. Provide a link to your graphic and give a 2-3 sentence description explaining why that graphic is not ethical.
-
-https://www.statisticshowto.com/wp-content/uploads/2014/01/usa-today-2.png
-
-This graphic comes from the Republican side of the Senate budget committee and shows total welfare on the y with time on the x. The y axis starts at 94,000,000(not 0) and goes only up to 100,000,000 making it look like the problem is more severe than it is. This is unethical since it is intentionally trying to make it seem more promiment that it actually is for a polical agenda. 
+```{r}
+library(mapproj)
+library(maps)
+library(tidyverse)
+world_df <- ggplot2::map_data("world")
+world_df %>% nrow()
 
 
-Question 3 (3 points). Explain, in your own words, what each of the following Git terms mean:
 
-commit: a message about the file you are pushing to gitHub and what was changed. 
+ggplot(data = world_df,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_map(projection = "mercator") +
+  theme(axis.text = element_blank()) +
+  theme_void()
 
-push: sends a copy of the checked items from RStudio to GitHub where it is saved.
+```
+Unsure how to get the data from HPI tidy to work with the world data. Tried a join but unsure what to join by.
 
-pull: Recieves and old save from github and pulls it back into Rstudio.
+Exercise 2. You may notice that the United States does not get coloured in your map. Examine this issue further and fix the map so that the United States is coloured.
 
-Question 4 (3 points). These three points are given if you successfully committed with a commit message and pushed your .Rmd and .html files to your GitHub account.
 
-Done
+
+```{r}
+
+```
+
+
+Exercise 3. You may have noticed that there are two horizontal stripes across your map. This is an issue that drove me nuts! Check out this submitted issue on ggplot2’s GitHub page for the reason for the error as well as a fix. Use it to fix your plot.
+
+```{r}
+ggplot(data = world_df,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_map(xlim=c(-180,180), projection = "mercator") +
+  theme(axis.text = element_blank()) +
+  theme_void()
+```
+
+
+Exercise 4. Read about Mercator projections in this blog post. What does this source say about the sizes of Greenland vs. Africa in a Mercator projection.
+
+Greenland should fit into africa 14 times but on the mercator graph this is not the case
+
+
+
+Exercise 5. Examine all of the different options for map projection with ?mapproject. Then, change the projection to "globular". Change the projection again to "gilbert". How does the relative size of Greenland to Africa change in the projections?
+
+```{r}
+ggplot(data = world_df,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_map(xlim=c(-180,180), projection = "gilbert") +
+  theme(axis.text = element_blank()) +
+  theme_void()
+```
+greenland becomes much smaller comparatively to africa. 
+
+```{r}
+ggplot(data = world_df,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_map(xlim=c(-180,180), projection = "globular") +
+  theme(axis.text = element_blank()) +
+  theme_void()
+```
+An even larger correction where greenland looks it could maybe fit in 14 times.
+
+
