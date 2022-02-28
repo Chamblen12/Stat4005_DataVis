@@ -1,0 +1,57 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+“All work presented is my own. I have not communicated with or worked with anyone else on this quiz.”
+
+Caleb Hamblen
+
+```{r}
+library(palmerpenguins)
+library(tidyverse)
+ggplot(data = penguins, aes(x = species)) +
+  geom_bar() +
+  labs(y = "Count")
+```
+
+1.
+
+The first graph is appropriate since it is only representing a true count. The other graph depicts an average and hides the underlying variability(outliers, skewdness, sample size) 
+
+2.
+```{r}
+library(here)
+
+hpi_df <- read_csv(here("Data/data/hpi-tidy.csv"))
+
+ggplot(data = hpi_df %>% group_by(Region) %>%
+         summarise(avg_life = mean(LifeExpectancy, na.rm = TRUE)),
+       aes(x = Region, y = avg_life)) +
+  geom_col() +
+  labs(y = "Average Bill Length")+
+  coord_flip()
+```
+
+3.
+```{r}
+library(here)
+
+hpi_df <- read_csv(here("Data/data/hpi-tidy.csv"))
+
+hpi_sum <- hpi_df %>% group_by(Region) %>%
+         summarise(avg_life = mean(LifeExpectancy, na.rm = TRUE))
+
+ggplot(data = hpi_df,
+       aes(x = Region, y = LifeExpectancy)) +
+  geom_point() +
+  labs(y = "Life Expectancy")+
+  coord_flip()+
+  geom_point(data = hpi_sum, aes(y = avg_life),
+             colour = "red")
+```
+
