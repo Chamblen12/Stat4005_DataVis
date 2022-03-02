@@ -1,0 +1,85 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+“All work presented is my own, and I have followed all rules for collaboration.”
+
+-Caleb Hamblen
+
+
+Construct a Shiny app for any data set that we have worked with so far (besides SLU Majors and Tennis) or for any data set you used in STAT/DATA 234. Thirteen points will be given for Shiny apps that:
+
+run,
+have at least 2 different inputs,
+have at least 1 plot output that looks presentable (e.g. appropriate labels, colour scale, and makes sense to construct).
+Then, write a 2 sentence description about the purpose of your app (2 points).
+
+
+```{r}
+library(readr)
+library(tidyverse)
+# error saying directory not found even tho properly loads in data set.
+pokemon_full <- read_csv("Data/data/pokemon_full.csv")
+library(shiny)
+
+var_choices <- names(pokemon_full)[c(4:9)]
+
+
+ui <- fluidPage(
+  sidebarLayout(sidebarPanel(
+    selectizeInput("typechoice",
+                   label = "Choose a Type", choices = levels(factor(pokemon_full$Type)),
+                   selected = "Grass"),
+    radioButtons("varchoice", label = "Choose a Statistic",
+                 choices = var_choices),
+    sliderInput("binnumber", label = "Choose a Number of Bins", 
+                min = 1, max = 50, value = 15, step = 1)),
+    mainPanel(plotOutput("histgraph"),
+              tableOutput("wintab"))
+  )
+)
+
+server <- function(input, output, session) {
+  
+  pokemon_full_sub <- reactive({
+    pokemon_full %>% filter(Type == input$typechoice)
+  })
+  
+  hist_plot <- reactive({
+    base_plot <- ggplot(pokemon_full_sub(), aes(x = .data[[input$varchoice]]))
+    
+    
+    if (is.numeric(pokemon_full_sub()[[input$varchoice]]) == TRUE) {
+      
+      base_plot + geom_histogram(colour = "black", fill = "white",
+                                 bins = input$binnumber) +
+        theme_minimal(base_size = 22)
+    } else if (is.character(pokemon_full_sub()[[input$varchoice]])) {
+      base_plot + geom_bar(colour = "black", fill = "white") +
+        theme_minimal(base_size = 22) +
+        coord_flip()
+    }
+  })
+  
+  
+  output$histgraph <- renderPlot({
+    hist_plot()
+  })
+  
+  output$wintab <- renderTable({
+    table(pokemon_full_sub()$result)
+  })
+  
+}
+
+
+shinyApp(ui, server)
+```
+
+The purpose of my app is to graph the base stats of a pokemon type of the users choosing. Then the reader can compare the differences between say Grass types - HP vs Fire types HP. The user can also adjust the number of bins in the graph. 
