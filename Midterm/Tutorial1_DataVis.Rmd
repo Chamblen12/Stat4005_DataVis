@@ -1,0 +1,70 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The section Grammar of Graphics mainly pertains to the seven parameters used in creating graphics. These are Data, Mappings, Geom_Function, Stat, Position, Facet_Function, and Coordinate_Function. When used together, you can describe any graphic and in more detail. Not all need to be used but most we see will all have data,mapping, and geom. From the data visualization reading one of the main takeaways is what makes a graph bad. One of the topics discussed is the data-to-ink ratio, where the more "stuff" on a graph the harder it is for the reader. Another important topic covered is the use of different color scales to make it easier for the viewer. There are diverging, sequential, and unordered for the three options.
+
+
+The data set videogame_clean holds information on various games, game price, game price category(1,2,3), meta_cat(review), and median_playtime.
+
+```{r}
+library(readr)
+library(tidyverse)
+videogame_clean <- read_csv("Data/data/videogame_clean.csv")
+```
+
+The following graph utilizes data, mapping, geom function, coord function and facet function. Data is where we declared data = in the ggplot(). Mapping happens in the aes() where we declare variables in this case median_playtime. Geom_function appears as geom_histogram and is the type of graphical representataion. Facet is used next to break the graph down into 4 seperate ones. Finally there is coord_flip() which is a coord function that simply switched the x and y axis. The graph shows a breakdown of playtime by review. 
+
+```{r}
+video_meta <- videogame_clean %>% filter(!is.na(meta_cat_factor)& !is.na(price_cat))
+
+
+video_meta <- video_meta %>% filter(median_playtime > 0)
+
+ggplot(data = video_meta, aes(x = median_playtime)) +
+  geom_histogram(colour = "black", fill = "white")+
+  facet_wrap(~meta_cat)+
+  coord_flip()
+
+```
+
+This graph shows how to use position and stat. Although both are simply the default formats, this is how one could edit position and stack. We also use data, mapping, and geom in this graphic as well. It describes the number of games with missing playtime values. Its not very useful but good practice nonetheless. 
+```{r}
+ggplot(data = videogame_clean, aes(x = price_cat, fill = playtime_miss)) +
+  geom_bar(position = "stack", stat = "count") +
+  ## don't need "stacked" because it's default
+  scale_fill_viridis_d()
+```
+
+One of the takeaways from data visualization is the data to ink ratio and how less is often more. Graphics with too much ink tend to cloud the viewer with information and clutter the graphic. The graph below is an extreme example of such a graphic. Using the theme we can add all sorts of fun customization. But its clear this graph has too much going on as it is unreadable.
+
+```{r}
+ggplot(data = video_meta, aes(x = price, y = median_playtime,
+                            colour = meta_cat)) +
+  geom_point() +
+  geom_smooth() +
+  theme(plot.background = element_rect(fill = "red"),
+        aspect.ratio = 5 ,
+        legend.direction = "horizontal")
+```
+
+This graphic uses less ink and is visually cleaner. Each category of game review can now be observed
+```{r}
+ggplot(data = video_meta, aes(x = price, y = median_playtime)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~meta_cat)
+```
+
+Here is an example of how to use discrete coloring with viridis_d(). We want discrete coloring when representing unordered data. For sequential coloring, we want data that is continuous. Finally for diverging scales, we want data with a common ground and two opposing sides. 
+```{r}
+ggplot(data = video_meta, aes(x = owners))+
+  geom_bar(aes(fill = meta_cat))+
+  scale_color_viridis_d()
+```
+

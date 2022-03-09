@@ -1,0 +1,51 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The goal of this section is to learn when to utilize maps so that they are effective. Even though data might be spatial a map might not be the best option. This is often the case when the data is representing a statistic where the actual geographical location isn't important. For example, looking at mean income by state doesn't have to be on a map. Just because Vermont has a high income we wouldn't expect it to affect the surrounding areas. However if we are looking at an invasive species of insect, seeing a map of states with higher counts would be beneficial. We create maps in R through use of the pre-made maps and shape files with the map package. From there we can create interactive maps with leaflet package that can further enhance a graphic. 
+
+
+ 
+ 
+ This first graphic is a basic plot of France done using a pre made map in R called with map_data(). Then we have to map the lat and long of each polygon in group so that R knows where to draw it. This leaves a solid funny looking map. 
+
+```{r}
+library(tidyverse)
+
+france_df <- ggplot2::map_data("france")
+
+ggplot(data = france_df,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon() 
+```
+
+
+Here we fix some of the "issues" with the first map. We removed the grid lines and axis titles with theme_void(). We also filled each region in white so that we can see them now. Finally we used projection albers to make it look to how we are used to seeing it instead of being all stretched out.
+```{r}
+ggplot(data = france_df,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+geom_polygon(colour = "black", fill = "white") +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme_void()
+```
+
+Finally. we can create some random values to color in our boring map. This is done through sample() which is a assiging a value of 1 to 7 for all 13353 rows. Then we set the aes() in our geom statement to fill by the new variable filler.
+```{r}
+france_df$filler <- sample(1:7, 13353, rep =TRUE)
+
+ggplot(data = france_df,
+            mapping = aes(x = long, y = lat,
+                          group = group)) +
+geom_polygon(colour = "black", aes(fill = filler)) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme_void()
+```
+
+

@@ -1,0 +1,149 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Topics to Cover:
+
+An Introduction to shiny
+
+An Introduction to Reactivity
+
+You should use a data set other than the data set you chose for the take-home quiz 6.
+
+Make Sure to Include:
+
+(4 points) An introductory statement with the goal of the section (in your own words) and a brief description of the data set and variables you will be using.
+
+Shiny is a package in R that allows users to create interactive graphics. The shiny app takes a ui argument and a server argument with a function to compose your graphic. Users can then select inputs to change the output of the graph in real time. Interactive graphs are useful because they can allow the user to explore interactions they are interested in. Most shiny graphs use something called reactivity. This is places in the code where a reactive expression is used. Reactive expressions take an input and display an output in rel time. 
+
+The dataset used in this tutorial is standings which holds info on nfl teams and their stats. We will use the team, pointsfor, pointsagainst, win, loss, playoffs(yes or no) and superbowl(yes or no).
+
+
+
+(16 points) R code chunks interspersed with some text descriptions about the code you have written and with text description about each topic. At the end of this tutorial, the person reading it should be able to construct a shiny app with real data.
+
+Below is a shiny app where a user can select a team and it will show a couple of statistics in a bar plot. This is a fairly simple shiny app that only uses two reactive statements. Reactive statements take inputs and automatically change the output when it is changed. The reactive steps below are when creating df_sub of a team of the users choosing and then again when the user selects a variable to graph. 
+```{r}
+library(tidyverse)
+library(readr)
+library(shiny)
+standings <- read_csv("Data/data/standings.csv")
+
+var_choices <- names(standings)[c(4:8)]
+                      
+                      
+ui <- fluidPage(
+  sidebarLayout(sidebarPanel(
+    selectizeInput("teamchoice",
+                   label = "Choose a Team", choices = levels(factor(standings$team_name)),
+                   selected = "Packers"),
+    radioButtons("varchoice", label = "Choose a Statistic",
+                 choices = var_choices)),
+    mainPanel(plotOutput("histgraph"),
+              tableOutput("wintab"))
+  )
+)
+
+server <- function(input, output, session) {
+  
+  df_sub <- reactive({
+    standings %>% filter(team_name == input$teamchoice)
+  })
+  
+  
+  hist_plot <- reactive({
+    
+    base_plot <- ggplot(df_sub(), aes(x = .data[[input$varchoice]]))
+    
+      base_plot + geom_histogram(colour = "black", fill = "white") +
+        theme_minimal(base_size = 22)
+    
+      
+  })
+  
+  output$histgraph <- renderPlot({
+    hist_plot()
+  })
+  
+  
+  output$wintab <- renderTable({
+    table(df_sub()$result)
+  })
+  
+  
+  
+}
+
+shinyApp(ui, server)
+```
+
+
+Here is a slightly more complicated shiny app. Now users can select a more variables and if it is a character variable it will change the plot. This is another reactive step as whenever the user changes the variable displayed we change the graphic being displayed. There is also the bin adjustment which is another reactive step since whenever the user changes the bin number slider, the graphic updates accordingly.   
+```{r}
+library(tidyverse)
+library(readr)
+library(shiny)
+standings <- read_csv("Data/data/standings.csv")
+
+var_choices <- names(standings)[c(4:8,14,15)]
+                      
+                      
+ui <- fluidPage(
+  sidebarLayout(sidebarPanel(
+    selectizeInput("teamchoice",
+                   label = "Choose a Team", choices = levels(factor(standings$team_name)),
+                   selected = "Packers"),
+    radioButtons("varchoice", label = "Choose a Statistic",
+                 choices = var_choices),
+    sliderInput("binnumber", label = "Choose a Number of Bins", 
+                min = 1, max = 50, value = 15, step = 1)),
+    mainPanel(plotOutput("histgraph"),
+              tableOutput("wintab"))
+  )
+)
+
+server <- function(input, output, session) {
+  
+  df_sub <- reactive({
+    standings %>% filter(team_name == input$teamchoice)
+  })
+  
+  
+  hist_plot <- reactive({
+    
+    base_plot <- ggplot(df_sub(), aes(x = .data[[input$varchoice]]))
+    
+    
+    if (is.numeric(df_sub()[[input$varchoice]]) == TRUE) {
+      
+      base_plot + geom_histogram(colour = "black", fill = "white",
+                                 bins = input$binnumber) +
+        theme_minimal(base_size = 22)
+    } else if (is.character(df_sub()[[input$varchoice]])) {
+      base_plot + geom_bar(colour = "black", fill = "white") +
+        theme_minimal(base_size = 22) +
+        coord_flip()
+    }
+  })
+  
+  output$histgraph <- renderPlot({
+    hist_plot()
+  })
+  
+  
+  output$wintab <- renderTable({
+    table(df_sub()$result)
+  })
+  
+  
+  
+}
+
+shinyApp(ui, server)
+```
+

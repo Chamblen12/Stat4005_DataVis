@@ -1,0 +1,65 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Topics to Cover:
+
+Incorporating Data Variability in Graphs
+
+Make sure to include:
+
+(4 points) An introductory statement with the goal of the section (in your own words) and a brief description of the data set and variables you will be using.
+
+The purpose of this section is understanding underlying variability and how it can be hidden sometimes. Bar plots are a common occurrence of such a graphic since it only shows you the final summary statistic. It doesn't show you the sample size and the underlying variability within it. Some might contain severe outliers that are misleading the overall statistic.
+
+This data set is from NFL teams and only uses total points for in a season and teams from the NFC north.
+
+(11 points) R code chunks interspersed with some text descriptions about the code you have written and with text description about each topic. For this section, you should actually make a graph (and not simply find an example already online like we looked at for hurricane graphs).
+
+
+The graph below is an example of hidding underlying variability. We don't know if there are outliers where a team scored a lot more/less than average that could be skewing the data. It also could be this data only has one year the bears and that this is not a fair commparisson. 
+```{r}
+library(readr)
+library(tidyverse)
+standings <- read_csv("Data/data/standings.csv")
+
+stan_NFCN <- standings %>% 
+  filter(team_name %in% c("Packers", "Vikings", "Lions", "Bears")) %>%
+  group_by(team_name) %>%
+  summarise(avg_points = mean(points_for)) %>%
+  mutate(team_name = fct_reorder(team_name, avg_points))
+
+ggplot(data = stan_NFCN, aes(x = team_name, y = avg_points)) +
+  geom_col() +
+  coord_flip()
+```
+
+
+This graph does show the underlying variability in that we can see every point in addition to the mean the bar plot went to. Now we can the Packers had one year where they put up an absurd amount of points and the Bears have two years with very few. 
+```{r}
+NFC_N <- standings%>%filter(team_name == "Packers" |team_name == "Bears" |team_name == "Vikings" |team_name == "Lions" )%>%
+  mutate(team_name =fct_reorder(team_name, points_for))
+
+ggplot(data = NFC_N, aes(x = team_name, y = points_for)) +
+  geom_point(alpha = .3, size = 2) +
+  coord_flip()+
+  geom_point(data = stan_NFCN, aes(y = avg_points),
+             colour = "red", size = 5, alpha = .5)
+```
+
+
+Finally we have a box plot, which gives the most information. We can now see that the packers good season was in fact an outline but the bears bad seasons are within the acceptable variability. We also learn from this version of the graph that it looks like the lions consistently score few point year to year where as the bears are more unpredictable.
+```{r}
+NFC_N <- NFC_N %>%
+  mutate(team_name =fct_reorder(team_name, points_for))
+
+  ggplot(data = NFC_N, aes(x=team_name, y=points_for))+
+    geom_boxplot()+
+    coord_flip()
+
+```
+
